@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-news-table
+      author: Serj
+      changes:
+        - createTable:
+            tableName: news
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: headline
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: false
+              - column:
+                  name: description
+                  type: Text
+                  constraints:
+                    nullable: false
+                    unique: false
+              - column:
+                  name: publication_time
+                  type: Datetime
+                  constraints:
+                    nullable: false
+                    unique: true
