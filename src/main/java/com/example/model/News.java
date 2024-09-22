@@ -8,11 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Getter
+@Setter
 @ToString
 @Table(name = "news")
 public class News {
@@ -28,5 +29,7 @@ public class News {
 
     @Column(nullable = false)
     private LocalDateTime publicationTime;
+
+
 
 }
