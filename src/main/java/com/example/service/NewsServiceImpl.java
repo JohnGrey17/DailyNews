@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -34,16 +35,20 @@ public class NewsServiceImpl implements NewsService {
 
     public List<NewsResponseDto> getNewsByTimeRange(
             LocalDateTime start, LocalDateTime end, Pageable pageable) {
-        return newsRepository.findByPublicationTimeBetween(start, end).stream()
+
+       return newsRepository.findAllByPublicationTimeBetween(start, end, pageable)
+                .stream().filter(e -> e.getPublicationTime().isAfter(start)
+                        && e.getPublicationTime().isBefore(end))
                 .map(newsMapper::toDto)
                 .toList();
     }
-
+    //todo зробити логіку на ранок , обіт ,вечір
     public NewsResponseDto updateNews(Long id, NewsUpdateDto updateDto) {
         News existingNews = newsRepository.findById(id)
                 .orElseThrow(() -> new NewsException("News with id " + id + "does not exist"));
         News savedNews = newsRepository.save(existingNews);
         return newsMapper.toDto(savedNews);
+        //todo робити останьою
     }
 
     @Override
@@ -64,6 +69,7 @@ public class NewsServiceImpl implements NewsService {
         newsRepository.findById(id).orElseThrow(()
                 -> new NewsException("News with id " + id + "does not exist"));
         newsRepository.deleteById(id);
+        //todo роьити останьою
     }
 
     public void deleteOldNews() {

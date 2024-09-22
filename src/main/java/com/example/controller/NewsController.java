@@ -6,14 +6,17 @@ import com.example.service.NewsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,14 +34,22 @@ public class NewsController {
     @Operation(summary = "Create news", description = "Create news with parameters in DB")
     public NewsResponseDto createNews(@RequestBody @Valid NewsRequestDto requestDto) {
         return newsService.addNews(requestDto);
-        //todo for Admin
     }
 
-    @GetMapping
+    @GetMapping("/today")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all news", description = "get all news on today")
     public List<NewsResponseDto> getAllNews(Pageable pageable) {
         return newsService.getAllOnToday(pageable);
-        //TODO foe admin And user
+    }
+
+    @GetMapping("/range")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get news in time range", description = "Get news in specified time range")
+    List<NewsResponseDto> getAllInRange(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH") LocalDateTime start,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH") LocalDateTime end,
+            Pageable pageable) {
+        return newsService.getNewsByTimeRange(start, end, pageable);
     }
 }
