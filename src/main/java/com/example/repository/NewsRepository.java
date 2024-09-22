@@ -3,7 +3,6 @@ package com.example.repository;
 import com.example.model.News;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +17,7 @@ public interface NewsRepository extends JpaRepository<News, Long> {
 
     Optional<News> findByHeadLineAndDescriptionAndPublicationTime(
             String headLine, String description, LocalDateTime publicationTime);
+
     List<News> findByPublicationTimeBetween(LocalDateTime start, LocalDateTime end);
 
     void deleteByPublicationTimeBefore(LocalDateTime dateTime);

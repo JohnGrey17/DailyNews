@@ -32,7 +32,6 @@ public class NewsServiceImpl implements NewsService {
         return newsMapper.toDto(saved);
     }
 
-
     public List<NewsResponseDto> getNewsByTimeRange(
             LocalDateTime start, LocalDateTime end, Pageable pageable) {
         return newsRepository.findByPublicationTimeBetween(start, end).stream()
@@ -61,7 +60,6 @@ public class NewsServiceImpl implements NewsService {
 
     }
 
-
     public void deleteNews(Long id) {
         newsRepository.findById(id).orElseThrow(()
                 -> new NewsException("News with id " + id + "does not exist"));
@@ -74,8 +72,10 @@ public class NewsServiceImpl implements NewsService {
     }
 
     private void newsDuplicateChecker(NewsRequestDto requestDto) {
-        Optional<News> existingNews = newsRepository.findByHeadLineAndDescriptionAndPublicationTime(
-                requestDto.getHeadLine(), requestDto.getDescription(), requestDto.getPublicationTime());
+        Optional<News> existingNews = newsRepository
+                .findByHeadLineAndDescriptionAndPublicationTime(
+                requestDto.getHeadLine(), requestDto.getDescription(),
+                        requestDto.getPublicationTime());
 
         if (existingNews.isPresent()) {
             throw new NewsException("That news already exists");

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 public interface NewsService {
 
     List<NewsResponseDto> getAllOnToday(Pageable pageable);
+
     NewsResponseDto addNews(NewsRequestDto requestDto);
 
     List<NewsResponseDto> getNewsByTimeRange(
@@ -19,7 +20,7 @@ public interface NewsService {
 
     NewsResponseDto updateNews(Long id, NewsUpdateDto updatedNews);
 
-     void deleteNews(Long id);
+    void deleteNews(Long id);
 
-     void deleteOldNews();
+    void deleteOldNews();
 }

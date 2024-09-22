@@ -1,17 +1,14 @@
 package com.example.controller;
 
-
 import com.example.dto.NewsRequestDto;
 import com.example.dto.NewsResponseDto;
 import com.example.service.NewsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,22 +33,12 @@ public class NewsController {
         return newsService.addNews(requestDto);
         //todo for Admin
     }
-/*
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get news on time period" , description = "Get all news on time period")
-    List<NewsResponseDto> getAllOnPeriod(
-            LocalDateTime startOfPeriod, LocalDateTime endOfPeriod, Pageable pageable) {
-        return newsService.getNewsByTimeRange(startOfPeriod, endOfPeriod, pageable);
-    }
-*/
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get all news" , description = "get all news on today")
-    public List<NewsResponseDto> getAllNews(Pageable pageable) {
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all news", description = "get all news on today")
+    public List<NewsResponseDto> getAllNews(Pageable pageable) {
         return newsService.getAllOnToday(pageable);
         //TODO foe admin And user
     }
-
 }
