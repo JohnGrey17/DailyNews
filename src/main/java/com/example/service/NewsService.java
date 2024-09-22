@@ -15,8 +15,11 @@ public interface NewsService {
 
     NewsResponseDto addNews(NewsRequestDto requestDto);
 
-    List<NewsResponseDto> getNewsByTimeRange(
+    List<NewsResponseDto> getNewsByRange(
             LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    List<NewsResponseDto> getNewsByHoursRange(int startHour, int endHour, Pageable pageable);
+
 
     NewsResponseDto updateNews(Long id, NewsUpdateDto updatedNews);
 

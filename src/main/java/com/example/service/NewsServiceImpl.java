@@ -7,10 +7,12 @@ import com.example.exception.NewsException;
 import com.example.mapper.NewsMapper;
 import com.example.model.News;
 import com.example.repository.NewsRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +35,7 @@ public class NewsServiceImpl implements NewsService {
         return newsMapper.toDto(saved);
     }
 
-    public List<NewsResponseDto> getNewsByTimeRange(
+    public List<NewsResponseDto> getNewsByRange(
             LocalDateTime start, LocalDateTime end, Pageable pageable) {
 
        return newsRepository.findAllByPublicationTimeBetween(start, end, pageable)
@@ -42,6 +44,20 @@ public class NewsServiceImpl implements NewsService {
                 .map(newsMapper::toDto)
                 .toList();
     }
+
+    public List<NewsResponseDto> getNewsByHoursRange(
+            int startHour, int endHour, Pageable pageable) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDateTime start = currentDate.atTime(startHour, 0);
+        LocalDateTime end = currentDate.atTime(endHour, 0);
+
+        List<News> newsList = newsRepository.findByPublicationTimeBetween(start, end, pageable);
+
+        return newsList.stream()
+                .map(newsMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     //todo зробити логіку на ранок , обіт ,вечір
     public NewsResponseDto updateNews(Long id, NewsUpdateDto updateDto) {
         News existingNews = newsRepository.findById(id)

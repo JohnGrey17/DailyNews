@@ -45,11 +45,24 @@ public class NewsController {
 
     @GetMapping("/range")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get news in time range", description = "Get news in specified time range")
+    @Operation(summary = "Get news in time range", description = "Get news in specified range")
     List<NewsResponseDto> getAllInRange(
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH") LocalDateTime start,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH") LocalDateTime end,
             Pageable pageable) {
-        return newsService.getNewsByTimeRange(start, end, pageable);
+        return newsService.getNewsByRange(start, end, pageable);
+        //TODO це для адміністратора
     }
+
+    @GetMapping("/range/time")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get news in hour range",
+            description = "Get news in specified hour range")
+    public List<NewsResponseDto> getAllInHourRange(
+            @RequestParam int startHour,
+            @RequestParam int endHour,
+            Pageable pageable) {
+        return newsService.getNewsByHoursRange(startHour, endHour, pageable);
+    }
+    //todo для юзера і адміна
 }
