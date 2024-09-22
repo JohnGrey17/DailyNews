@@ -1,3 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: db.changelog/01-create-news-table.yaml
