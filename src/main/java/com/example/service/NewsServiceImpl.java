@@ -91,6 +91,7 @@ public class NewsServiceImpl implements NewsService {
     public void deleteOldNews() {
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
         newsRepository.deleteByPublicationTimeBefore(yesterday);
+        //todo роьити останьо
     }
 
     private void newsDuplicateChecker(NewsRequestDto requestDto) {
