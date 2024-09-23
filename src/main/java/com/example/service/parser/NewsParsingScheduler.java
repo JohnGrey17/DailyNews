@@ -13,10 +13,10 @@ import java.util.List;
 public class NewsParsingScheduler {
 
     @Autowired
-    private NewsParserServiceImpl newsParserService;
+    private NewsParserService newsParserService;
 
     @Autowired
-    private NewsServiceImpl newsService;
+    private NewsService newsService;
 
     @Scheduled(cron = "0 * * * * *")
     public void parseAndSaveNews() {

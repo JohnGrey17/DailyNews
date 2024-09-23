@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-isdeleted-column-to-news-table
+      author: Serj
+      changes:
+        - addColumn:
+            tableName: news
+            columns:
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false

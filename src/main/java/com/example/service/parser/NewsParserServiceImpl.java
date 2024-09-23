@@ -16,11 +16,11 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NewsParserServiceImpl {
+public class NewsParserServiceImpl implements NewsParserService{
 
     private final String newsUrl = "https://www.pravda.com.ua/news/";
 
-
+    @Override
     public List<NewsRequestDto> parseNews() {
 
         List<NewsRequestDto> newsList = new ArrayList<>();
