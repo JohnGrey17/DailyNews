@@ -8,7 +8,7 @@ public class NewsResponseDto {
 
     private String headLine;
 
-    private String description;
+    private String content;
 
     private LocalDateTime publicationTime;
 }

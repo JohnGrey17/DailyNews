@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.service.news;
 
 import com.example.dto.NewsRequestDto;
 import com.example.dto.NewsResponseDto;
@@ -11,15 +11,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NewsServiceImpl implements NewsService {
+
 
     @Autowired
     private NewsRepository newsRepository;
@@ -28,17 +27,19 @@ public class NewsServiceImpl implements NewsService {
     private NewsMapper newsMapper;
 
     @Override
-    public NewsResponseDto addNews(NewsRequestDto requestDto) {
-        newsDuplicateChecker(requestDto);
-        News news = newsMapper.toModel(requestDto);
-        News saved = newsRepository.save(news);
-        return newsMapper.toDto(saved);
+    public void addNews(NewsRequestDto requestDto) {
+        if(nullChecker(requestDto)) {
+            if (!newsDuplicateChecker(requestDto)) {
+                News news = newsMapper.toModel(requestDto);
+                newsRepository.save(news);
+            }
+        }
     }
 
     public List<NewsResponseDto> getNewsByRange(
             LocalDateTime start, LocalDateTime end, Pageable pageable) {
 
-       return newsRepository.findAllByPublicationTimeBetween(start, end, pageable)
+        return newsRepository.findAllByPublicationTimeBetween(start, end, pageable)
                 .stream().filter(e -> e.getPublicationTime().isAfter(start)
                         && e.getPublicationTime().isBefore(end))
                 .map(newsMapper::toDto)
@@ -94,14 +95,14 @@ public class NewsServiceImpl implements NewsService {
         //todo роьити останьо
     }
 
-    private void newsDuplicateChecker(NewsRequestDto requestDto) {
-        Optional<News> existingNews = newsRepository
-                .findByHeadLineAndDescriptionAndPublicationTime(
+    private boolean newsDuplicateChecker(NewsRequestDto requestDto) {
+        return newsRepository.findByHeadLineAndDescriptionAndPublicationTime(
                 requestDto.getHeadLine(), requestDto.getDescription(),
-                        requestDto.getPublicationTime());
-
-        if (existingNews.isPresent()) {
-            throw new NewsException("That news already exists");
-        }
+                requestDto.getPublicationTime()).isPresent();
+    }
+    private boolean nullChecker(NewsRequestDto newsRequestDto) {
+        return newsRequestDto.getHeadLine() != null
+                && newsRequestDto.getDescription() != null
+                && newsRequestDto.getPublicationTime() != null;
     }
 }

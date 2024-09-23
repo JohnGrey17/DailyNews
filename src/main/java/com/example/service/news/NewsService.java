@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.service.news;
 
 import com.example.dto.NewsRequestDto;
 import com.example.dto.NewsResponseDto;
@@ -13,13 +13,12 @@ public interface NewsService {
 
     List<NewsResponseDto> getAllOnToday(Pageable pageable);
 
-    NewsResponseDto addNews(NewsRequestDto requestDto);
+    void addNews(NewsRequestDto requestDto);
 
     List<NewsResponseDto> getNewsByRange(
             LocalDateTime start, LocalDateTime end, Pageable pageable);
 
     List<NewsResponseDto> getNewsByHoursRange(int startHour, int endHour, Pageable pageable);
-
 
     NewsResponseDto updateNews(Long id, NewsUpdateDto updatedNews);
 

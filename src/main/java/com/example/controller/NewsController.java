@@ -2,7 +2,7 @@ package com.example.controller;
 
 import com.example.dto.NewsRequestDto;
 import com.example.dto.NewsResponseDto;
-import com.example.service.NewsService;
+import com.example.service.news.NewsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -32,8 +32,8 @@ public class NewsController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create news", description = "Create news with parameters in DB")
-    public NewsResponseDto createNews(@RequestBody @Valid NewsRequestDto requestDto) {
-        return newsService.addNews(requestDto);
+    public void createNews(@RequestBody @Valid NewsRequestDto requestDto) {
+         newsService.addNews(requestDto);
     }
 
     @GetMapping("/today")
