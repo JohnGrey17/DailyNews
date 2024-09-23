@@ -2,7 +2,8 @@ package com.example.controller;
 
 import com.example.dto.NewsRequestDto;
 import com.example.dto.NewsResponseDto;
-import com.example.service.NewsService;
+import com.example.dto.NewsUpdateDto;
+import com.example.service.news.NewsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +36,8 @@ public class NewsController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create news", description = "Create news with parameters in DB")
-    public NewsResponseDto createNews(@RequestBody @Valid NewsRequestDto requestDto) {
-        return newsService.addNews(requestDto);
+    public void createNews(@RequestBody @Valid NewsRequestDto requestDto) {
+        newsService.addNews(requestDto);
     }
 
     @GetMapping("/today")
@@ -51,7 +55,7 @@ public class NewsController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH") LocalDateTime end,
             Pageable pageable) {
         return newsService.getNewsByRange(start, end, pageable);
-        //TODO це для адміністратора
+        //TODO ADMIN`s Controller
     }
 
     @GetMapping("/range/time")
@@ -65,4 +69,27 @@ public class NewsController {
         return newsService.getNewsByHoursRange(startHour, endHour, pageable);
     }
     //todo для юзера і адміна
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update news", description = "Found news by id and update")
+    public NewsUpdateDto updateNews(@PathVariable("id") Long id,
+                                    @RequestBody NewsUpdateDto updateDto) {
+        return newsService.updateNews(id, updateDto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete news", description = "Delete news by id")
+    void deleteNewsById(@PathVariable("id") Long id) {
+        newsService.deleteById(id);
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete all old news",
+            description = "Delete (mark as delete) all news from yesterday")
+    public void deleteYesterdayNews() {
+        newsService.deleteOldNews();
+    }
 }

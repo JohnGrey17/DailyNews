@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.service.news;
 
 import com.example.dto.NewsRequestDto;
 import com.example.dto.NewsResponseDto;
@@ -11,10 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -28,23 +26,24 @@ public class NewsServiceImpl implements NewsService {
     private NewsMapper newsMapper;
 
     @Override
-    public NewsResponseDto addNews(NewsRequestDto requestDto) {
-        newsDuplicateChecker(requestDto);
-        News news = newsMapper.toModel(requestDto);
-        News saved = newsRepository.save(news);
-        return newsMapper.toDto(saved);
+    public void addNews(NewsRequestDto requestDto) {
+        if (nullChecker(requestDto) && !newsDuplicateChecker(requestDto)) {
+            News news = newsMapper.toModel(requestDto);
+            newsRepository.save(news);
+        }
     }
 
+    @Override
     public List<NewsResponseDto> getNewsByRange(
             LocalDateTime start, LocalDateTime end, Pageable pageable) {
 
-       return newsRepository.findAllByPublicationTimeBetween(start, end, pageable)
-                .stream().filter(e -> e.getPublicationTime().isAfter(start)
-                        && e.getPublicationTime().isBefore(end))
+        return newsRepository.findAllByPublicationTimeBetween(start, end, pageable)
+                .stream()
                 .map(newsMapper::toDto)
                 .toList();
     }
 
+    @Override
     public List<NewsResponseDto> getNewsByHoursRange(
             int startHour, int endHour, Pageable pageable) {
         LocalDate currentDate = LocalDate.now();
@@ -54,54 +53,67 @@ public class NewsServiceImpl implements NewsService {
         List<News> newsList = newsRepository.findByPublicationTimeBetween(start, end, pageable);
 
         return newsList.stream()
+                .filter(e -> !e.isDeleted())
                 .map(newsMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    //todo зробити логіку на ранок , обіт ,вечір
-    public NewsResponseDto updateNews(Long id, NewsUpdateDto updateDto) {
+    @Override
+    public NewsUpdateDto updateNews(Long id, NewsUpdateDto updateDto) {
         News existingNews = newsRepository.findById(id)
                 .orElseThrow(() -> new NewsException("News with id " + id + "does not exist"));
-        News savedNews = newsRepository.save(existingNews);
-        return newsMapper.toDto(savedNews);
-        //todo робити останьою
+        existingNews.setHeadLine(updateDto.getHeadLine());
+        existingNews.setDescription(updateDto.getDescription());
+        existingNews.setPublicationTime(LocalDateTime.now());
+
+        News saved = newsRepository.save(existingNews);
+
+        return newsMapper.toUpdatedModel(saved);
     }
 
     @Override
     public List<NewsResponseDto> getAllOnToday(Pageable pageable) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime endOfToday = now.with(LocalTime.MAX);
         LocalDateTime beginOfToday = now.with(LocalTime.MIN);
+        LocalDateTime endOfToday = now.with(LocalTime.MAX);
 
-        return newsRepository.findAll().stream()
-                .filter(e -> e.getPublicationTime().isBefore(endOfToday)
-                        && e.getPublicationTime().isAfter(beginOfToday))
+        List<News> newsList = newsRepository
+                .findAllByPublicationTimeToday(beginOfToday, endOfToday, pageable);
+
+        return newsList.stream()
                 .map(newsMapper::toDto)
                 .toList();
-
     }
 
-    public void deleteNews(Long id) {
+    @Override
+    public void deleteById(Long id) {
         newsRepository.findById(id).orElseThrow(()
                 -> new NewsException("News with id " + id + "does not exist"));
         newsRepository.deleteById(id);
-        //todo роьити останьою
     }
 
+    @Override
     public void deleteOldNews() {
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
-        newsRepository.deleteByPublicationTimeBefore(yesterday);
-        //todo роьити останьо
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime beginOfToday = now.with(LocalTime.MIN);
+
+        List<News> all = newsRepository.findAll();
+        all.stream()
+                .filter(e -> e.getPublicationTime().isBefore(beginOfToday))
+                .forEach(e -> e.setDeleted(true));
+        all.forEach(e -> newsRepository.save(e));
     }
 
-    private void newsDuplicateChecker(NewsRequestDto requestDto) {
-        Optional<News> existingNews = newsRepository
-                .findByHeadLineAndDescriptionAndPublicationTime(
+    private boolean newsDuplicateChecker(NewsRequestDto requestDto) {
+        return newsRepository.findByHeadLineAndDescriptionAndPublicationTime(
                 requestDto.getHeadLine(), requestDto.getDescription(),
-                        requestDto.getPublicationTime());
+                requestDto.getPublicationTime()).isPresent();
+    }
 
-        if (existingNews.isPresent()) {
-            throw new NewsException("That news already exists");
-        }
+    private boolean nullChecker(NewsRequestDto newsRequestDto) {
+        return newsRequestDto.getHeadLine() != null
+                && newsRequestDto.getDescription() != null
+                && newsRequestDto.getPublicationTime() != null;
     }
 }
+//todo зробити логіку на ранок , обіт ,вечір

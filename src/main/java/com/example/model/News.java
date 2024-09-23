@@ -10,11 +10,15 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Setter
 @ToString
+@SQLDelete(sql = "UPDATE news SET is_deleted = true WHERE id = ?")
+@SQLRestriction(value = "is_deleted=false")
 @Table(name = "news")
 public class News {
 
@@ -25,11 +29,13 @@ public class News {
     @Column(nullable = false)
     private String headLine;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
     private LocalDateTime publicationTime;
 
-
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 
 }

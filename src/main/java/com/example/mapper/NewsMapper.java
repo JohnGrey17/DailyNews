@@ -12,8 +12,19 @@ public interface NewsMapper {
 
     News toModel(NewsRequestDto newsRequestDto);
 
-    NewsResponseDto toDto(News news);
+    default NewsResponseDto toDto(News news) {
+        NewsResponseDto responseDto = new NewsResponseDto();
+        responseDto.setHeadLine(news.getHeadLine());
+        responseDto.setPublicationTime(news.getPublicationTime());
+        responseDto.setDescription(news.getDescription());
+        return responseDto;
+    }
 
-    News toUpdatedModel(NewsUpdateDto newsUpdateDto);
-
+    default NewsUpdateDto toUpdatedModel(News news) {
+        NewsUpdateDto updatedDto = new NewsUpdateDto();
+        updatedDto.setHeadLine(news.getHeadLine());
+        updatedDto.setDescription(news.getDescription());
+        updatedDto.setUpdatedTime(news.getPublicationTime());
+        return updatedDto;
+    }
 }
