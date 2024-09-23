@@ -27,5 +27,10 @@ public class NewsParsingScheduler {
             System.out.println("No news found to parse and save.");
         }
     }
+
+
+    public void deleteYesterdayNews() {
+
+    }
     //todo налаштувати на 20 хвилин інтервал
 }

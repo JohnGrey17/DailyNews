@@ -1,5 +1,6 @@
 package com.example.dto;
 
+import jakarta.persistence.Column;
 import java.time.LocalDateTime;
 import lombok.Data;
 
@@ -8,7 +9,8 @@ public class NewsResponseDto {
 
     private String headLine;
 
-    private String content;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     private LocalDateTime publicationTime;
 }

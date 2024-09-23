@@ -20,9 +20,9 @@ public interface NewsService {
 
     List<NewsResponseDto> getNewsByHoursRange(int startHour, int endHour, Pageable pageable);
 
-    NewsResponseDto updateNews(Long id, NewsUpdateDto updatedNews);
+    NewsUpdateDto updateNews(Long id, NewsUpdateDto updatedNews);
 
-    void deleteNews(Long id);
+    void deleteById(Long id);
 
     void deleteOldNews();
 }
