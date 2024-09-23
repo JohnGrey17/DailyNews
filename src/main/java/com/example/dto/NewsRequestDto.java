@@ -1,7 +1,6 @@
 package com.example.dto;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Lob;
 import java.time.LocalDateTime;
 import lombok.Data;
 

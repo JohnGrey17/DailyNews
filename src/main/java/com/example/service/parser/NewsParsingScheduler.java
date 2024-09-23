@@ -2,12 +2,10 @@ package com.example.service.parser;
 
 import com.example.dto.NewsRequestDto;
 import com.example.service.news.NewsService;
-import com.example.service.news.NewsServiceImpl;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class NewsParsingScheduler {
@@ -27,7 +25,6 @@ public class NewsParsingScheduler {
             System.out.println("No news found to parse and save.");
         }
     }
-
 
     public void deleteYesterdayNews() {
 

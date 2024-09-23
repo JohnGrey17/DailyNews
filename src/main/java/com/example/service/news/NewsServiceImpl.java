@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,7 +44,8 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public List<NewsResponseDto> getNewsByHoursRange(int startHour, int endHour, Pageable pageable) {
+    public List<NewsResponseDto> getNewsByHoursRange(
+            int startHour, int endHour, Pageable pageable) {
         LocalDate currentDate = LocalDate.now();
         LocalDateTime start = currentDate.atTime(startHour, 0);
         LocalDateTime end = currentDate.atTime(endHour, 0);
@@ -109,6 +109,7 @@ public class NewsServiceImpl implements NewsService {
                 requestDto.getHeadLine(), requestDto.getDescription(),
                 requestDto.getPublicationTime()).isPresent();
     }
+
     private boolean nullChecker(NewsRequestDto newsRequestDto) {
         return newsRequestDto.getHeadLine() != null
                 && newsRequestDto.getDescription() != null

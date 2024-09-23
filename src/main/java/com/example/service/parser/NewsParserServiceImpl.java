@@ -16,7 +16,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NewsParserServiceImpl implements NewsParserService{
+public class NewsParserServiceImpl implements NewsParserService {
 
     private final String newsUrl = "https://www.pravda.com.ua/news/";
 
@@ -28,7 +28,9 @@ public class NewsParserServiceImpl implements NewsParserService{
 
         try {
             Document document = Jsoup.connect(newsUrl).get();
-            Elements newsElements = document.select("body > div.main_content > div > div.container_sub_news_list > div.container_sub_news_list_wrapper.mode1 > div");
+            Elements newsElements = document.select("body > div.main_content "
+                    + "> div > div.container_sub_news_list "
+                    + "> div.container_sub_news_list_wrapper.mode1 > div");
 
             for (Element newsElement : newsElements) {
                 String headLine = newsElement.select("div.article_header > a").text();

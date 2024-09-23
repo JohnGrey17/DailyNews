@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +37,7 @@ public class NewsController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create news", description = "Create news with parameters in DB")
     public void createNews(@RequestBody @Valid NewsRequestDto requestDto) {
-         newsService.addNews(requestDto);
+        newsService.addNews(requestDto);
     }
 
     @GetMapping("/today")
@@ -63,7 +62,9 @@ public class NewsController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get news in hour range",
             description = "Get news in specified hour range")
-    public List<NewsResponseDto> getAllInHourRange(@RequestParam int startHour, @RequestParam int endHour,
+    public List<NewsResponseDto> getAllInHourRange(
+            @RequestParam int startHour,
+            @RequestParam int endHour,
             Pageable pageable) {
         return newsService.getNewsByHoursRange(startHour, endHour, pageable);
     }
@@ -73,7 +74,7 @@ public class NewsController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update news", description = "Found news by id and update")
     public NewsUpdateDto updateNews(@PathVariable("id") Long id,
-            @RequestBody NewsUpdateDto updateDto) {
+                                    @RequestBody NewsUpdateDto updateDto) {
         return newsService.updateNews(id, updateDto);
     }
 
@@ -86,7 +87,8 @@ public class NewsController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete all old news", description = "Delete (mark as delete) all news from yesterday")
+    @Operation(summary = "Delete all old news",
+            description = "Delete (mark as delete) all news from yesterday")
     public void deleteYesterdayNews() {
         newsService.deleteOldNews();
     }
